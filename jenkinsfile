@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('git checkout') {
             steps {
-             git 'https://github.com/Sushmaa123/CI-CD-Project.git'
+             git 'https://github.com/Yaswanth270/java-ci-cd-project-1.git'
             }
         }
          stage('compile') {
@@ -20,10 +20,10 @@ pipeline {
         }
          stage('code analysis') {
             steps {
-              withSonarQubeEnv('sonar-server') {
-               sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=CI-CD-Project \
+              withSonarQubeEnv('sonarqube') {
+               sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=java-ci-cd-project-1 \
                -Dsonar.java.binaries=. \
-               -Dsonar.projectKey=CI-CD-Project'''
+               -Dsonar.projectKey=java-ci-cd-project-1'''
               }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
          stage('docker build') {
             steps {
              script {
-                 withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                 withDockerRegistry(credentialsId: 'docker-push', toolName: 'docker') {
                     sh 'docker build -t spring-boot .'
                   }
               }
@@ -66,7 +66,7 @@ pipeline {
     post {
         always {
             echo 'slack Notification.'
-            slackSend channel: '#javaspring-ci-cd-pipeline',
+            slackSend channel: '#java-spring-ci-cd-1',
             color: COLOR_MAP [currentBuild.currentResult],
             message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URl}"
             
