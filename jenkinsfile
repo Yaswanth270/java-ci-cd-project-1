@@ -44,25 +44,13 @@ pipeline {
          stage('docker push') {
             steps {
              script {
-                withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                withDockerRegistry(credentialsId: 'docker-push', toolName: 'docker') {
                     sh 'docker tag spring-boot sushmagowda321/spring-boot'
                     sh 'docker push sushmagowda321/spring-boot'
                   }
               }
             }
-         }    
-        stage('docker compose') {
-            steps {
-             script {
-                 withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                    sh 'docker-compose up -d'
-                  }
-              }
-            }
-        }
-
-    }	
- 
+         }    	
     post {
         always {
             echo 'slack Notification.'
